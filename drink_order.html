@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Drink Service</title>
+    <link rel="stylesheet" href="css/drink_styles.css">
+    <link rel="stylesheet" href="css/food_styles.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+
+</head>
+<body>
+
+    <div class="heading">
+        <img src="images/Montevar_logo.png" alt=""></div>
+
+    <div class="container">
+        <h1>Montevar Hotel - Room Drink Service</h1>
+
+        <!-- Room Drink Service Form -->
+        <form id="roomDrinkForm" class="form">
+            <div class="form-group">
+                <label for="roomNo">Room No:</label>
+                <input type="text" id="roomNo" name="roomNo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="drinkType">Type of Drink:</label>
+                <textarea id="drinkType" name="drinkType" required rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="beverage">Beverage Type:</label>
+                <textarea id="beverage" name="beverage" required rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="paymentMethod">Payment Method:</label>
+                <select id="paymentMethod" name="paymentMethod" required>
+                    <option value="cash">Cash</option>
+                    <option value="card">Card</option>
+                    <option value="transfer">Transfer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="serviceLocation">Service Location:</label>
+                <select id="serviceLocation" name="serviceLocation" required>
+                    <option value="room">Room Service</option>
+                    <option value="bar">Bar</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="totalAmount">Total Amount:</label>
+                <input type="number" id="totalAmount" name="totalAmount" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+
+        <h2>Submitted Entries</h2>
+        <div class="table-container">
+
+        <table id="drinkTable" class="styled-table">
+            <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Type of Drink</th>
+                    <th>Beverage Type</th>
+                    <th>Payment Method</th>
+                    <th>Service Location</th>
+                    <th>Total Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    </div>
+
+    <script src="js/room_drink.js"></script>
+</body>
+</html>

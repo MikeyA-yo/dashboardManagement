@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Montevar Hotel Dashboard</title>
+</head>
+<body>
+
+
+    <header>
+        <div id="head_con">
+        <div>
+            <i id="menu-icon" class='bx bx-menu'></i>
+        </div>
+
+        <div class="logo">
+            <h1>Dashboard</h1>
+        </div></div>
+        <div id="welcom">
+        <h1>Welcome <span id="welcomeName"></span></h1>
+        <div class="logout">
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+    </header>
+
+
+    <section id="menu">
+        <div class="logo">
+            <img src="images/Montevar_logo.png" alt="">
+            <h2>Montevar</h2>
+        </div>
+
+        <div class="items">
+           
+            <li><i class='bx bxs-pie-chart-alt'></i><a href="#">Dashboard</a></li>
+            <li><i class='bx bxs-hotel'></i><a href="rooms.html">Room Listings</a></li>
+
+            <li><i class='bx bx-analyse'></i><a href="#" onclick="openModal('inventory.html')">Inventory</a></li>
+            <li><i class='bx bx-detail'></i><a href="#" onclick="openModal('booking_report.html')">Bookings Report</a></li>
+            <li><i class='bx bx-dish'></i><a href="#" onclick="openModal('food_report.html')">Food Report</a></li>
+            <li><i class='bx bx-drink'></i><a href="#" onclick="openModal('drinks_report.html')">Drinks Report</a></li>
+            <li><i class='bx bx-calendar-event'></i><a href="#" onclick="openModal('event_report.html')">Events Report</a></li>
+            <li><i class='bx bx-closet'></i><a href="#" onclick="openModal('laundry_report.html')">Laundry Report</a></li>
+            <li><i class='bx bx-swim'></i><a href="#" onclick="openModal('swimming_pool_report.html')">Pool Report</a></li>
+
+
+
+        </div>
+    </section>
+
+
+     <!-- Modal for login -->
+     <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Login to Access</h2>
+            <label for="modalUsername">Username:</label>
+            <input type="text" id="modalUsername" placeholder="Enter username"><br><br>
+            <label for="modalPassword">Password:</label>
+            <input type="password" id="modalPassword" placeholder="Enter password"><br><br>
+            <button onclick="validateLogin()">Login</button>
+        </div>
+    </div>
+    
+
+   
+
+    <main>
+        <div class="grid-container">
+            <div class="card bookings" id="bookings">
+                <div class="card-overlay">
+                    <p class="stats" id="booking-count">0</p>
+               <h2>Bookings</h2>
+                <div class="icons">
+                    <a href="bookings.html">  <button class="icon" onclick="addBooking()"><div> <div class="click"> Add </div> <div class="click-icon"> ➕ </div></div></button></a>
+                    <!-- Button to trigger the popup -->
+                    <button class="icon" onclick="viewBookingDetails()"><div><div class="click">Details</div><div class="click-icon">ℹ️</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            </div>
+            
+            <div class="card room-food" id="room-food">
+                <div class="card-overlay">
+                    <p class="stats" id="food-count">0</p>
+                <h2>Room Food</h2>
+                <div class="icons">
+                    <a href="room_food.html"><button class="icon" onclick="addRoomFood()"> <div> <div class="click">Add</div> <div class="click-icon"> ➕ </div></div> </button></a>
+                    <button class="icon" onclick="viewDetails('room-food')"><div> <div class="click"> Details </div> <div class="click-icon"> ℹ️ </div></div></button>
+                </div>
+            </div>
+            </div>
+
+
+            <div class="card drinks" id="drinks">
+                <div class="card-overlay">
+                <p class="stats" id="drink-count">0</p>
+                <h2>Drinks</h2>
+                <div class="icons">
+                    <a href="drink_order.html"> <button class="icon" onclick="addDrinks()"><div> <div class="click"> Add </div> <div class="click-icon"> ➕ </div></div></button></a>
+                    <button class="icon" onclick="viewDetails('drinks')"> <div> <div class="click">Details</div><div class="click-icon"> ℹ️ </div></div></button>
+                </div>
+            </div>
+            </div>
+            
+            <div class="card events" id="events">
+                <div class="card-overlay">
+                <p class="stats" id="event">0</p>
+                <h2>Events</h2>
+                <div class="icons">
+                    <a href="event.html"> <button class="icon" onclick="addEvents()"> <div> <div class="click">Add</div> <div class="click-icon"> ➕ </div></div> </button></a>
+                    <button class="icon" onclick="viewDetails('events')"><div> <div class="click"> Details </div> <div class="click-icon"> ℹ️ </div></div></button>
+                </div>
+            </div>
+            </div>
+
+            <!-- Additional sections would go here -->
+        </div>
+
+
+
+
+        <div class="grid-container">
+            <div class="card laundry" id="laundry">
+                <div class="card-overlay">
+                <p class="stats" id="laundry-count">0</p>
+                <h2>Laundry</h2>
+                <div class="icons">
+                    <a href="laundry_page.html"> <button class="icon" onclick="addLaundry()"><div> <div class="click"> Add </div> <div class="click-icon"> ➕ </div></div></button></a>
+                    <button class="icon" onclick="viewDetails('laundry')"> <div> <div class="click">Details</div><div class="click-icon"> ℹ️ </div></div></button>
+                </div>
+            </div>
+            </div>
+            
+            <div class="card pool" id="pool">
+                <div class="card-overlay">
+                <p class="stats" id="pool-count">0</p>
+                <h2>Pool</h2>
+                <div class="icons">
+                    <a href="swimming_pool.html"> <button class="icon" onclick="addPool()"> <div> <div class="click">Add</div> <div class="click-icon"> ➕ </div></div> </button> </a>
+                    <button class="icon" onclick="viewDetails('pool')"><div> <div class="click"> Details </div> <div class="click-icon"> ℹ️ </div></div></button>
+                </div>
+            </div>
+            </div>
+
+
+            
+            
+
+            <!-- Additional sections would go here -->
+        </div>
+
+
+        <!-- Popup for displaying bookings -->
+<div id="booking-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closeBookingDetails()">&times;</span>
+        <h2>Booking Details</h2>
+        <!-- Scrollable container for the table -->
+        <div class="scrollable-container" id="booking-details-content">
+            <!-- Booking table will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Food Details Popup -->
+<div id="food-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closeFoodDetails()">&times;</span>
+        <div id="food-details-content" class="scrollable-container"></div>
+    </div>
+</div>
+
+
+
+<!-- Drink Details Popup Modal -->
+<div id="drink-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closeDrinkDetails()">×</span>
+        <div id="drink-details-content" class="scrollable-container"></div>
+    </div>
+</div>
+
+
+<!-- Event Details Popup Modal -->
+<div id="event-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closeEventDetails()">×</span>
+        <div id="event-details-content" class="scrollable-container"></div>
+    </div>
+</div>
+
+<!-- Laundry Details Popup Modal -->
+<div id="laundry-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closeLaundryDetails()">×</span>
+        <div id="laundry-details-content" class="scrollable-container"></div>
+    </div>
+</div>
+
+
+
+<!-- Swimming Pool Details Popup Modal -->
+<div id="pool-details-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closePoolDetails()">×</span>
+        <div id="pool-details-content" class="scrollable-container"></div>
+    </div>
+</div>
+
+
+
+
+
+
+    </main>
+
+
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>
