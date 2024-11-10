@@ -4,7 +4,7 @@ const path = require("path");
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../../uploads");
+    cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
     cb(
@@ -33,7 +33,7 @@ router.post(
     { name: "photo3" },
   ]),
   addRoom
-);
+); 
 
 // Fetch all rooms
 router.get("/", getAllRooms);

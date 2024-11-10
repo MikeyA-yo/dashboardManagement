@@ -30,6 +30,22 @@ const BookingSchema = new mongoose.Schema({
     type: String,
     required: [true, "Provide room type"],
   },
+  numberOfDays:{
+   type: Number,
+   default:0
+  },
+  totalAmount:{
+    type:Number,
+    default: 0
+  },
+  completedDate:{
+    type: String,
+    default: new Date().toISOString()
+  },
+  username:{
+    type:String,
+    required: [true, "Provide username"]
+  },
   isConfirmed: {
     type: Boolean,
     default: false,

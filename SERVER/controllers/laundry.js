@@ -1,6 +1,6 @@
 const Laundry = require("../models/Laundry");
 
-const addLaundryItems = (req, res) => {
+const addLaundryItems = async (req, res) => {
   try {
     // Regular checks for existing fields
     const {
@@ -10,6 +10,10 @@ const addLaundryItems = (req, res) => {
       typeOfService,
       paymentMethod,
       totalAmount,
+      date,
+      edit,
+      _id,
+      username,
     } = req.body;
 
     if (
@@ -24,11 +28,17 @@ const addLaundryItems = (req, res) => {
         .status(400)
         .json({ message: "Please fill out all necessary fields" });
     }
-
-    const laundryItem = Laundry.create({ ...req.body });
+    let ltI
+    if(!edit){
+      const laundryItem = new Laundry({fullName, roomNumber, numberOfClothes, typeOfService, paymentMethod, totalAmount, date, username});
+      await laundryItem.save()
+      ltI = laundryItem
+    }else{
+      ltI = await Laundry.updateOne({ _id}, {fullName, roomNumber, numberOfClothes, typeOfService, paymentMethod, totalAmount,})
+    }
     res
       .status(201)
-      .json({ message: "Laundry items added successfully", laundryItem });
+      .json({ message: "Laundry items added successfully", ltI });
   } catch (err) {
     res
       .status(500)
@@ -47,4 +57,14 @@ const seeLaundryEntries = async (req, res) => {
   }
 };
 
-module.exports = { addLaundryItems, seeLaundryEntries };
+const clearLaundries = async (req, res) =>{
+  try{
+    await Laundry.deleteMany({})
+    res.status(200).json({message:"Cleared successcul"})
+  }catch(e){
+    res
+    .status(500)
+    .json({ message: "Failed to clear laundry entries", error: err.message });
+  }
+}
+module.exports = { addLaundryItems, seeLaundryEntries, clearLaundries };

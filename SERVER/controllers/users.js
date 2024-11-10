@@ -1,3 +1,5 @@
+const Booking = require("../models/Booking");
+const Drinks = require("../models/Drinks");
 const User = require("../models/User");
 
 const registerUser = async (req, res) => {
@@ -9,11 +11,17 @@ const registerUser = async (req, res) => {
         .json({ message: "Please fill all necessary fields" });
     }
 
-    const user = await User.create({ name, username, password });
+    const user = await User.create({ name, username, password, role:"Admin" });
     const token = user.createJWT();
-    localStorage.setItem("token", token);
+    res.status(201).cookie("token", token, {
+      httpOnly: false,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 day
+    }).json({username: user.username})
+    // localStorage.setItem("token", token);
 
-    res.status(201).json({ username: user.username });
+    // res.status(201).json({ username: user.username });
   } catch (err) {
     res.status(500).json({ message: "Failed to register", error: err.message });
   }
@@ -49,9 +57,14 @@ const logIn = async (req, res) => {
 
     // If all user passes both checks then send the token
     const token = user.createJWT();
-    localStorage.setItem("token", token);
+    // res.cookie("token", token);
 
-    res.status(200).json({ username });
+    res.status(200).cookie("token", token,  {
+      httpOnly: false,
+      secure: false,
+      sameSite: 'lax',
+      maxAge:7 * 24 * 60 * 60 * 1000 // 7 day
+    }).json({user})
   } catch (err) {
     res.status(500).json({ message: "Login Failed", error: err.message });
   }
@@ -60,11 +73,21 @@ const logIn = async (req, res) => {
 // Deleting all the users in the database
 const deleteAllUsers = async (req, res) => {
   try {
-    await User.deleteMany({});
-    res.status(200).json({ message: "Deleted all users successfully" });
+    await User.find().deleteMany({});
+    await Booking.find().deleteMany({});
+    await Drinks.find().deleteMany({});
+    res.status(200).json({ message: "Deleted all users and their data's successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to delete all users" });
   }
 };
 
-module.exports = { registerUser, logIn, deleteAllUsers };
+const logOut = async (req, res) =>{
+  try{
+   res.status(200).clearCookie('token').json({ message: 'Logged out successfully' });
+  }catch(e){
+   res.status(500).json({message: "Logout error"})
+  }
+}
+
+module.exports = { registerUser, logIn, deleteAllUsers, logOut };

@@ -1,0 +1,174 @@
+/* Basic page styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #555;
+    margin: 20px 0;
+}
+
+/* Container for room list */
+#rooms-list {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Individual room card styling */
+.room-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.room-item:hover {
+    transform: scale(1.03);
+}
+
+.room-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.room-info {
+    padding: 15px;
+}
+
+.room-info h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0 0 10px;
+}
+
+.room-info p {
+    margin: 5px 0;
+    color: #777;
+}
+
+.status-span {
+    font-weight: bold;
+}
+
+.room-buttons,
+.status-buttons {
+    display: flex;
+    gap: 10px;
+    padding: 10px 15px;
+}
+
+.view-room-btn,
+.book-room-btn,
+.status-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.view-room-btn {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.book-room-btn {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+.status-button {
+    color: #fff;
+}
+
+.status-button.available {
+    background-color: #28a745;
+}
+
+.status-button.reserved {
+    background-color: #ffc107;
+}
+
+.status-button.booked {
+    background-color: #dc3545;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+}
+
+#modalImage {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+}
+
+.slider-btn,
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    padding: 0 10px;
+}
+
+.slider-btn:hover,
+.close-btn:hover {
+    color: #000;
+}
+
+#prevBtn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#nextBtn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}

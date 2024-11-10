@@ -35,7 +35,7 @@ const addRoom = async (req, res) => {
     res.status(400).send("Error saving room: " + error.message);
   }
 };
-
+ 
 const getAllRooms = async (req, res) => {
   try {
     const rooms = await RoomModel.find({});
@@ -87,14 +87,10 @@ const updateRoom = async (req, res) => {
         req.files && req.files["photo3"]
           ? `/uploads/${req.files["photo3"][0].filename}`
           : undefined,
+      status:req.body.status    
     };
 
-    const updatedRoom = await RoomModel.findByIdAndUpdate(
-      roomId,
-      updatedRoomData,
-      { new: true }
-    );
-
+    const updatedRoom = await RoomModel.updateOne({_id:roomId}, updatedRoomData)
     if (!updatedRoom) {
       return res.status(404).json({ message: "Room not found" });
     }

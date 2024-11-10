@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { addFood, seeAddedFood } = require("../controllers/food");
+const { addFood, seeAddedFood, clearFood } = require("../controllers/food");
 
-router.route("/").get(seeAddedFood).post(addFood);
+router.route("/").get(seeAddedFood).post(addFood).delete(clearFood);
 
 module.exports = router;

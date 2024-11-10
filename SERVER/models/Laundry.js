@@ -27,6 +27,13 @@ const LaundrySchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please provide the amount being paid"],
   },
+  date:{
+    type:String,
+    default: new Date().toLocaleDateString()
+  },
+  username:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("Laundry", LaundrySchema);

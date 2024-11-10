@@ -9,6 +9,9 @@ const addFood = async (req, res) => {
       paymentMethod,
       serviceLocation,
       totalAmount,
+      edit,
+      username, 
+      _id
     } = req.body;
     if (
       !roomNumber ||
@@ -22,8 +25,16 @@ const addFood = async (req, res) => {
         .status(400)
         .json({ message: "Please fill all required fields" });
     }
-
-    const food = await Food.create({ ...req.body });
+    let fd;
+    if(!edit){
+      const food = new Food({username, roomNumber, typeOfFood, beverageOrWater, paymentMethod, serviceLocation, totalAmount });
+      await food.save()
+      fd = food
+    }else{
+      fd = await Food.find({})
+      await Food.updateOne({_id}, {roomNumber, typeOfFood, beverageOrWater, paymentMethod, serviceLocation, totalAmount})
+    }
+    let food = fd
     return res.status(201).json({ message: "Food successfully added", food });
   } catch (err) {
     return res
@@ -44,4 +55,14 @@ const seeAddedFood = async (req, res) => {
   }
 };
 
-module.exports = { addFood, seeAddedFood };
+const clearFood = async (req, res) =>{
+  try{
+    await Food.deleteMany({})
+    res.status(200).json({message:"Food cleared successfuly"})
+  }catch(e){
+    return res
+      .status(500)
+      .json({ message: "Failed to clear food", error: err.message });
+  }
+}
+module.exports = { addFood, seeAddedFood, clearFood };
