@@ -28,6 +28,13 @@ const FoodSchema = new mongoose.Schema({
     required: [true, "Please provide amount"],
     min: [0, "You can't pay a negative value"],
   },
+  date:{
+    type:String,
+    default: new Date().toLocaleDateString()
+  },
+  username:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("Food", FoodSchema);

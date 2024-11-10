@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { addPool, seePools } = require("../controllers/pools");
+const { addPool, seePools, clearPools } = require("../controllers/pools");
 
-router.route("/").get(seePools).post(addPool);
+router.route("/").get(seePools).post(addPool).delete(clearPools);
 
 module.exports = router;

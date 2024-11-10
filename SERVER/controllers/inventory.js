@@ -16,16 +16,17 @@ const addTotalSales = async (req, res) => {
       "eventsEndOfDaySales",
       "laundryEndOfDaySales",
       "poolEndOfDaySales",
-    ];
+    ]; 
 
-    const missingFields = requiredFields.some((field) => !req.body[field]);
-    if (missingFields) {
+    const {bookingsEndOfDaySales, foodEndOfDaySales, drinksEndOfDaySales, eventsEndOfDaySales, laundryEndOfDaySales, poolEndOfDaySales, totalSales, date} = req.body
+    if (!bookingsEndOfDaySales || !foodEndOfDaySales || !drinksEndOfDaySales || !eventsEndOfDaySales || !laundryEndOfDaySales || !poolEndOfDaySales || !totalSales) {
       return res
         .status(400)
         .json({ message: "Please fill all necessary fields" });
     }
-
-    const salesReport = await SalesReport.create({ ...req.body });
+    
+    const salesReport = new SalesReport({ bookingsEndOfDaySales, foodEndOfDaySales, drinksEndOfDaySales, eventsEndOfDaySales, laundryEndOfDaySales, poolEndOfDaySales, totalSales, date });
+    await salesReport.save()
     res
       .status(201)
       .json({ message: "Sales reports successfully added", salesReport });
@@ -52,7 +53,8 @@ const addDailyStorageEntry = async (req, res) => {
         .json({ message: "Please fill all necessary fields" });
     }
 
-    const entry = await DailyStorage.create({ productName, quantity });
+    const entry = new DailyStorage({ productName, quantity });
+    await entry.save()
     res
       .status(201)
       .json({ message: "Added daily storage entry successfully", entry });
@@ -90,7 +92,8 @@ const addStorageUsageEntry = async (req, res) => {
         .json({ message: "Please fill all necessary fields" });
     }
 
-    const entry = await StorageUsage.create({ productName, takeOutQuantity });
+    const entry = new StorageUsage({ productName, takeOutQuantity });
+    await entry.save()
     res
       .status(201)
       .json({ message: "Added storage usage entry successfully", entry });

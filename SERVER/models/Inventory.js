@@ -12,7 +12,7 @@ const SalesReportSchema = new mongoose.Schema({
     required: [true, "This field is required"],
     min: [0, "Field cannot have a negative value"],
   },
-  drinksEndOfDaySales: {
+  drinksEndOfDaySales: { 
     type: Number,
     required: [true, "This field is necessary"],
     min: [0, "Field cannot have a negative value"],
@@ -32,6 +32,15 @@ const SalesReportSchema = new mongoose.Schema({
     required: [true, "This field is necessary"],
     min: [0, "Field cannot have a negative value"],
   },
+  totalSales:{
+    type:Number,
+    required: [true, "This field is necessary"],
+    min: [0, "Field cannot have a negative value"],
+  },
+  date:{
+    type:String,
+    default: new Date().toLocaleDateString()
+  }
 });
 
 const DailyStorageSchema = new mongoose.Schema({
@@ -44,6 +53,10 @@ const DailyStorageSchema = new mongoose.Schema({
     required: [true, "Please provide quantity of the product"],
     min: [0, "Cannot be a negative value"],
   },
+  date:{
+    type:Date,
+    default:new Date().toLocaleDateString()
+  }
 });
 
 const StorageUsageSchema = new mongoose.Schema({
@@ -56,6 +69,10 @@ const StorageUsageSchema = new mongoose.Schema({
     required: [true, "Please provide the quantity to be taken out"],
     min: [0, "Cannot be a negative value"],
   },
+  date:{
+    type:Date,
+    default:new Date().toLocaleDateString()
+  }
 });
 
 const SalesReport = mongoose.model("SalesReport", SalesReportSchema);

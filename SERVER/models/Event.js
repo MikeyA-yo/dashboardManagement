@@ -33,6 +33,13 @@ const EventSchema = new mongoose.Schema({
     min: [0, "Negative values not allowed"],
     required: [true, "Please provide the total amount for the cost of events"],
   },
+  date:{
+    type:String,
+    default: new Date().toLocaleDateString
+  },
+  username:{
+    type:String
+  },
 });
 
 // To convert date in you form (e.g 2024-11-11) to a mongodb's format, i.e ISOString

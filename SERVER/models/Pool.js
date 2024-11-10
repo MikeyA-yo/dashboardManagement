@@ -12,12 +12,19 @@ const Pool = new mongoose.Schema({
   },
   hotelAccessories: {
     type: String,
-  },
+  }, 
   totalCost: {
     type: Number,
     min: [0, "Amount cannot be negative"],
     required: [true, "Please provide the total cost for the swimming session"],
   },
+  date:{
+    type: String,
+    default: new Date().toLocaleDateString()
+  },
+  username:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("Pool", Pool);

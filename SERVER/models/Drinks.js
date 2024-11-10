@@ -28,6 +28,13 @@ const DrinkSchema = new mongoose.Schema({
     required: [true, "Please provide the total amount being paid"],
     min: [0, "Total amount cannot be negative"],
   },
+  date:{
+    type: String,
+    default: new Date().toLocaleDateString()
+  },
+  username:{
+    type:String,
+  }
 });
 
 module.exports = mongoose.model("Drink", DrinkSchema);
