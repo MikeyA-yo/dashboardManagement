@@ -131,6 +131,7 @@ async function bookNow() {
     if (!roomExists) {
         newBooking.isConfirmed = true
         if (edit){
+            console.log(edit)
             newBooking.edit = edit
             newBooking._id = currentUpdateId
             edit = false 
@@ -169,7 +170,7 @@ function clearRoomFields() {
  async function editBooking(index) {
     const res1 = await fetch("/api/v1/bookings")
     const completedBookings = await res1.json() || [];
-    const bookings = completedBookings
+    const bookings = completedBookings.filter(b => b.isConfirmed)
     const booking = bookings[index];
 
     document.getElementById('fullname').value = booking.fullName;
@@ -256,7 +257,7 @@ async function printBooking(index) {
 async function checkoutBooking(index) {
     const res1 = await fetch("/api/v1/bookings")
     const completedBookings = await res1.json() || [];
-    const bookings = completedBookings;
+    const bookings = completedBookings.filter(b => b.isConfirmed);
     const booking = bookings[index];
 
     // Create checkout data object
@@ -274,9 +275,9 @@ async function checkoutBooking(index) {
         completedDate: new Date().toISOString()  // Add completed date 
     };
 
-    //remove from confirmed
-    let roomNumber = booking.roomNumber
-    let username = JSON.parse(localStorage.getItem("user")).username
+    // //remove from confirmed
+    // let roomNumber = booking.roomNumber
+    // let username = JSON.parse(localStorage.getItem("user")).username
     //
 
     // Add the checkout data to completedBookings

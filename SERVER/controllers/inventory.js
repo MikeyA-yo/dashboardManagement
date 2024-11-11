@@ -19,7 +19,7 @@ const addTotalSales = async (req, res) => {
     ]; 
 
     const {bookingsEndOfDaySales, foodEndOfDaySales, drinksEndOfDaySales, eventsEndOfDaySales, laundryEndOfDaySales, poolEndOfDaySales, totalSales, date} = req.body
-    if (!bookingsEndOfDaySales || !foodEndOfDaySales || !drinksEndOfDaySales || !eventsEndOfDaySales || !laundryEndOfDaySales || !poolEndOfDaySales || !totalSales) {
+    if (typeof bookingsEndOfDaySales == "undefined" || typeof foodEndOfDaySales == "undefined"|| typeof drinksEndOfDaySales == "undefined" || typeof eventsEndOfDaySales == "undefined" || typeof laundryEndOfDaySales == "undefined" || typeof poolEndOfDaySales == "undefined" || typeof totalSales == "undefined") {
       return res
         .status(400)
         .json({ message: "Please fill all necessary fields" });

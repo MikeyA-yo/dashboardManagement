@@ -75,7 +75,6 @@ const addBooking = async (req, res) => {
         roomType,
         numberOfDays,
         totalAmount,
-        username,
         isConfirmed})
 
     }
@@ -98,12 +97,12 @@ const seeBookings = async (req, res) => {
   }
 };
 const deleteBookings = async (req, res) => {
-  const { username, roomNumber, completed } = req.body;
+  const {  roomNumber, completed } = req.body;
   try {
     const bookings =  Booking.find();
     
-    if (username && roomNumber){
-      await bookings.deleteMany({username, roomNumber})
+    if (roomNumber){
+      await bookings.deleteMany({ roomNumber})
     } else if (completed){
       await bookings.deleteMany({ isConfirmed:false})
     }else{
