@@ -33,7 +33,7 @@ async function init(){
    // bookings handler
    const res1 = await fetch("/api/v1/bookings")
     const completedBookings = await res1.json() || [];
-    document.getElementById("booking-count").textContent = completedBookings.length
+    document.getElementById("booking-count").textContent = completedBookings.filter(b => b.isConfirmed).length
     // drinks handler
     const res2 = await fetch("/api/v1/drinks");
     const drinks = await res2.json()
