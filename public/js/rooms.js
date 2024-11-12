@@ -28,9 +28,7 @@ async function generateRoomList() {
                 <button class="view-room-btn" onclick="viewRoomPhotos(${index})">View Room</button>
                 <button class="book-room-btn" onclick="bookRoom(${index})">Book Room</button>
             </div>
-            <div class="room-edit">
-                <button class="edit-room-btn" onclick="editRoom('${room._id}')">Edit Room</button>
-            </div>
+            
             <div class="status-buttons">
                 <button class="status-button available" onclick="updateRoomStatus(${index}, 'Available')">Available</button>
                 <button class="status-button reserved" onclick="updateRoomStatus(${index}, 'Reserved')">Reserved</button>
