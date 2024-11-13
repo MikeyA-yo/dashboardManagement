@@ -16,7 +16,7 @@ async function generateRoomList() {
 
         // Use the correct image URL path construction
         roomDiv.innerHTML = `
-            <img src="/uploads/${room.mainPhoto || 'default-room.jpg'}" alt="Room ${index + 1} Main Photo" class="room-photo">
+            <img src="${room.mainPhoto || 'default-room.jpg'}" alt="Room ${index + 1} Main Photo" class="room-photo">
             <div class="room-info">
                 <h2>Room ${index + 1}: ${room.type}</h2>
                 <p>Room Number: ${room.no}</p>
