@@ -1,4 +1,3 @@
-// Fetch room data from localStorage and display it
 async function generateRoomList() {
     const roomsList = document.getElementById("rooms-list");
     if (!roomsList) {
@@ -6,18 +5,18 @@ async function generateRoomList() {
         return;
     }
 
-    // Fetch rooms from localStorage // we shall now use db;
-    const res = await fetch("/api/rooms")
-    const rooms = await res.json() || []
-    // const rooms = JSON.parse(localStorage.getItem('roomData')) || [];
+    // Fetch rooms from the database
+    const res = await fetch("/api/rooms");
+    const rooms = await res.json() || [];
 
     roomsList.innerHTML = ''; // Clear existing rooms
     rooms.forEach((room, index) => {
         const roomDiv = document.createElement("div");
         roomDiv.classList.add("room-item");
 
+        // Use the correct image URL path construction
         roomDiv.innerHTML = `
-            <img src="${window.location.origin}${room.mainPhoto || room.photo1 || '/images/default-room.jpg'}" alt="Room ${index + 1} Main Photo" class="room-photo">
+            <img src="/uploads/${room.mainPhoto || 'default-room.jpg'}" alt="Room ${index + 1} Main Photo" class="room-photo">
             <div class="room-info">
                 <h2>Room ${index + 1}: ${room.type}</h2>
                 <p>Room Number: ${room.no}</p>
@@ -28,7 +27,6 @@ async function generateRoomList() {
                 <button class="view-room-btn" onclick="viewRoomPhotos(${index})">View Room</button>
                 <button class="book-room-btn" onclick="bookRoom(${index})">Book Room</button>
             </div>
-            
             <div class="status-buttons">
                 <button class="status-button available" onclick="updateRoomStatus(${index}, 'Available')">Available</button>
                 <button class="status-button reserved" onclick="updateRoomStatus(${index}, 'Reserved')">Reserved</button>
@@ -39,6 +37,8 @@ async function generateRoomList() {
         roomsList.appendChild(roomDiv);
     });
 }
+
+
 
 // Function to apply color based on room status
 function applyStatusColor(status) {
