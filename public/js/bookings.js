@@ -172,7 +172,10 @@ function clearRoomFields() {
     const completedBookings = await res1.json() || [];
     const bookings = completedBookings.filter(b => b.isConfirmed)
     const booking = bookings[index];
-
+    if(booking.isPrint){
+        alert("Can't edit after print")
+        return
+    }
     document.getElementById('fullname').value = booking.fullName;
     document.getElementById('phone').value = booking.phoneNumber;
     document.getElementById('date-from').value = booking.durationOfStayStart.slice(0, booking.durationOfStayStart.indexOf("T"));
@@ -216,7 +219,7 @@ window.onload = function () {
 async function printBooking(index) {
     const res1 = await fetch("/api/v1/bookings")
     const completedBookings = await res1.json() || [];
-    const bookings = completedBookings;
+    const bookings = completedBookings.filter(b => b.isConfirmed);
     const booking = bookings[index];
     const printWindow = window.open('', '', 'width=800,height=600');
 
@@ -250,6 +253,13 @@ async function printBooking(index) {
         <button onclick="window.print()">Print</button>
         <button onclick="window.close()">Close</button>
     `);
+    await fetch("/api/v1/bookings", {
+        method:"POST",
+        headers:{
+            "Content-type":"application/json"
+        },
+        body:JSON.stringify({isPrint:true, _id:booking._id, edit:true})
+    })
 }
 
 // Checkout booking and remove from the confirmed bookings

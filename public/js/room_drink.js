@@ -109,7 +109,10 @@ async function editDrinkEntry(index) {
     const drinks = await res.json()
     const drinkEntries = drinks.drinks || [];
     const entry = drinkEntries[index];
-
+    if(entry.isPrint){
+        alert("Can't edit after print")
+        return
+    }
     document.getElementById('roomNo').value = entry.roomNumber;
     document.getElementById('drinkType').value = entry.drinkType;
     document.getElementById('beverage').value = entry.beverageType;
@@ -127,7 +130,7 @@ async function editDrinkEntry(index) {
 async function printDrinkEntry(index) {
     const res = await fetch("/api/v1/drinks");
     const drinks = await res.json()
-    const drinkEntries = drinks || [];
+    const drinkEntries = drinks.drinks || [];
     const entry = drinkEntries[index];
 
     const printWindow = window.open('', '', 'width=800,height=600');
@@ -166,7 +169,13 @@ async function printDrinkEntry(index) {
         <button onclick="window.print()">Print</button>
         <button onclick="window.close()">Close</button>
     `);
-
+    await fetch ("/api/v1/drinks", {
+        method:"POST",
+        headers:{
+            "Content-type":"application/json"
+        },
+        body: JSON.stringify({isPrint:true, edit:true, _id:entry._id})
+    })
     printWindow.document.close();
     printWindow.focus();
 }

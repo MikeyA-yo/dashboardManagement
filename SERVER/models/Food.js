@@ -34,6 +34,9 @@ const FoodSchema = new mongoose.Schema({
   },
   username:{
     type:String
+  },
+  isPrint:{
+    type:Boolean,
   }
 });
 

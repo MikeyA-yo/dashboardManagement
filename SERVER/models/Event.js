@@ -40,6 +40,9 @@ const EventSchema = new mongoose.Schema({
   username:{
     type:String
   },
+  isPrint:{
+    type:Boolean,
+  }
 });
 
 // To convert date in you form (e.g 2024-11-11) to a mongodb's format, i.e ISOString

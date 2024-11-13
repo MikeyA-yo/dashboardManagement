@@ -4,9 +4,12 @@ const Pool = require("../models/Pool");
 const addPool = async (req, res) => {
   try {
     const requiredFields = ["fullName", "hours", "totalCost"];
-   const {fullName, hours, hotelAccessories, totalCost, date, username, edit, _id} = req.body
+   const {fullName, hours, hotelAccessories, totalCost, date, username, edit, _id, isPrint} = req.body
     // const missingFields = requiredFields.some((field) => !req.body[field]);
-
+     if(edit && isPrint && _id && (!fullName || !hours ||  !totalCost)){
+        let p = await Pool.updateOne({_id}, {isPrint});
+        return res.status(200).json({message:p})
+     }
     if (!fullName || !hours ||  !totalCost) {
       return res
         .status(400)

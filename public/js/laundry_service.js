@@ -56,6 +56,10 @@ async function saveLaundryEntry(entry) {
 }
 
 async function updateLaundryEntry(updatedEntry, index) {
+    if (updatedEntry.isPrint){
+        alert("Can't edit after a print")
+        return
+    }
     updatedEntry.edit = true
     await fetch("/api/v1/laundry",{
         method:"POST",
@@ -101,7 +105,10 @@ async function editLaundryEntry(index) {
     const data =await res.json()
     const laundryEntries = data || [];
     const entry = laundryEntries[index];
-
+    if(entry.isPrint){
+        alert("Can't edit after print")
+        return
+    }
     document.getElementById('fullName').value = entry.fullName;
     document.getElementById('roomNo').value = entry.roomNumber;
     document.getElementById('totalClothes').value = entry.numberOfClothes;
@@ -134,6 +141,13 @@ async function printLaundryEntry(index) {
         <button onclick="window.print()">Print</button>
         <button onclick="window.close()">Close</button>
     `);
+    await fetch("/api/v1/laundry",{
+        method:"POST",
+        headers:{
+            "Content-type":"application/json"
+        },
+        body:JSON.stringify({isPrint:true, _id:entry._id,edit:true})
+    })
     printWindow.document.close();
     printWindow.focus();
 }

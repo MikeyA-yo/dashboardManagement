@@ -50,6 +50,9 @@ const BookingSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isPrint:{
+    type:Boolean,
+  }
 });
 
 BookingSchema.pre("save", function (next) {

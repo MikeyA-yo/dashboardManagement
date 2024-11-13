@@ -3,7 +3,7 @@ const Event = require("../models/Event");
 const addEvent = async (req, res) => {
   try {
     // regular checks for required fields
-    const {fullName, phoneNumber, eventType, eventDate, renderedServices, totalCost, date, username, email, edit, _id} = req.body
+    const {fullName, phoneNumber, eventType, eventDate, renderedServices, totalCost, date, username, email, edit, _id, isPrint} = req.body
     const requiredFields = [
       "fullName",
       "phoneNumber",
@@ -12,7 +12,10 @@ const addEvent = async (req, res) => {
       "renderedServices",
       "totalCost",
     ];
-
+    if (edit && _id && isPrint && (!fullName || !phoneNumber || !eventType || !eventDate || !renderedServices || !totalCost)){
+      let e = await Event.updateOne({_id},{isPrint});
+      return res.status(200).json({message:e})
+    }
     // const missingField = requiredFields.some((field) => !req.body[field]);
     if (!fullName || !phoneNumber || !eventType || !eventDate || !renderedServices || !totalCost) {
       return res

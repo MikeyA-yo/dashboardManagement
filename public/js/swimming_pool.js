@@ -92,7 +92,10 @@ async function editSwimmingPoolEntry(index) {
     const data = await res.json()
     const swimmingPoolEntries = data || [];
     const entry = swimmingPoolEntries[index];
-
+    if (entry.isPrint){
+        alert("Can't edit after print")
+        return
+    }
     document.getElementById('fullName').value = entry.fullName;
     document.getElementById('hours').value = entry.hours;
     document.getElementById('accessories').value = entry.hotelAccessories;
@@ -121,6 +124,13 @@ async function printSwimmingPoolEntry(index) {
         <button onclick="window.print()">Print</button>
         <button onclick="window.close()">Close</button>
     `);
+    await fetch("/api/v1/pools",{
+        method:"POST",
+        headers:{
+            "Content-type":"application/json"
+        },
+        body:JSON.stringify({edit:true, isPrint:true, _id:entry._id})
+    })
     printWindow.document.close();
     printWindow.focus();
 }
