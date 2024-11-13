@@ -10,14 +10,11 @@ const addDrink = async (req, res) => {
       "serviceLocation",
       "totalAmount",
     ];
-    const {roomNumber, drinkType, beverageType, paymentMethod, serviceLocation, totalAmount, username, date , edit, _id} = req.body
-    // Check for if any of the required fields are missing
-    // const missingFields = requiredFields.some((field) => !req.body[field]);
-    // if (missingFields) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Please fill all necessary fields" });
-    // }
+    const {roomNumber, drinkType, beverageType, paymentMethod, serviceLocation, totalAmount, username, date , edit, _id, isPrint} = req.body
+    if(edit && _id && isPrint && (!roomNumber || !drinkType || !beverageType || !paymentMethod || !serviceLocation || !totalAmount || !username || !date)){
+      let d = await Drink.updateOne({_id},{isPrint});
+      return res.status(200).json({message:d})
+    }
      if(!roomNumber || !drinkType || !beverageType || !paymentMethod || !serviceLocation || !totalAmount || !username || !date){
       return res
           .status(400)

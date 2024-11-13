@@ -14,8 +14,19 @@ const addLaundryItems = async (req, res) => {
       edit,
       _id,
       username,
+      isPrint
     } = req.body;
-
+    if(edit && _id && isPrint && (
+      !fullName ||
+      !roomNumber ||
+      !numberOfClothes ||
+      !typeOfService ||
+      !paymentMethod ||
+      !totalAmount
+    )){
+      let l = await Laundry.updateOne({_id}, {isPrint});
+      return res.status(200).json({message:l})
+    }
     if (
       !fullName ||
       !roomNumber ||

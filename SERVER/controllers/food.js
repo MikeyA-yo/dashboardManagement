@@ -11,8 +11,20 @@ const addFood = async (req, res) => {
       totalAmount,
       edit,
       username, 
-      _id
+      _id,
+      isPrint
     } = req.body;
+    if (edit && _id && isPrint && (
+      !roomNumber ||
+      !typeOfFood ||
+      !beverageOrWater ||
+      !paymentMethod ||
+      !serviceLocation ||
+      !totalAmount
+    )){
+      let f = await Food.updateOne({_id},{isPrint});
+      return res.status(200).json({message:f})
+    }
     if (
       !roomNumber ||
       !typeOfFood ||

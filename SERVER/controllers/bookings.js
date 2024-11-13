@@ -33,8 +33,21 @@ const addBooking = async (req, res) => {
       username,
       isConfirmed,
       edit,
-      _id
+      _id,
+      isPrint
     } = req.body;
+    if( edit && isPrint && _id && (
+      !fullName ||
+      !phoneNumber ||
+      !durationOfStayStart ||
+      !durationOfStayEnd ||
+      !roomNumber ||
+      !roomPrice ||
+      !roomType
+    )){
+      let b = await Booking.updateOne({_id}, {isPrint});
+      return res.status(200).json({message:b})
+    }
     if (
       !fullName ||
       !phoneNumber ||

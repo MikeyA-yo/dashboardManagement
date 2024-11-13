@@ -113,7 +113,10 @@ async function editEventEntry(index) {
     const jsonData = await res.json()
     const eventEntries = jsonData.events || [];
   const entry = eventEntries[index];
-
+  if(entry.isPrint){
+    alert("Can't edit after printing")
+    return
+  }
   document.getElementById("fullName").value = entry.fullName;
   document.getElementById("phoneNo").value = entry.phoneNumber;
   document.getElementById("email").value = entry.email;
@@ -176,7 +179,13 @@ async function printEventEntry(index) {
                   <p><span class="highlight">Date Submitted:</span> ${
                     entry.date
                   }</p> <hr> `);
-
+                  await fetch("/api/v1/events", {
+                    method: "POST",
+                    headers: {
+                      "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({isPrint:true,edit:true, _id:entry._id}),
+                  });
   printWindow.document.close();
   printWindow.print();
 }
