@@ -1,7 +1,7 @@
 const Booking = require("../models/Booking");
 const Drinks = require("../models/Drinks");
 const User = require("../models/User");
-
+const {io} = require("../../app")
 const registerUser = async (req, res) => {
   const { name, username, password } = req.body;
   try {
@@ -74,14 +74,19 @@ const logIn = async (req, res) => {
 const deleteAllUsers = async (req, res) => {
   try {
     await User.find().deleteMany({});
-    await Booking.find().deleteMany({});
-    await Drinks.find().deleteMany({});
+    io.on("connection", socket =>{
+      io.emit("log-out")
+    })
     res.status(200).json({ message: "Deleted all users and their data's successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to delete all users" });
   }
 };
-
+const checkUser=async (req, res)=>{
+  const {username} = req.body;
+  const user = await User.findOne({username});
+  return res.json(user)
+}
 const logOut = async (req, res) =>{
   try{
    res.status(200).clearCookie('token').json({ message: 'Logged out successfully' });
@@ -90,4 +95,4 @@ const logOut = async (req, res) =>{
   }
 }
 
-module.exports = { registerUser, logIn, deleteAllUsers, logOut };
+module.exports = { registerUser, logIn, deleteAllUsers, logOut, checkUser };

@@ -7,12 +7,15 @@ const dotenv = require("dotenv");
 const connectdb = require("./SERVER/db/connectdb");
 const fs = require("fs");
 
+
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize express app
 const app = express();
-
+//ws
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
 // Import routers
 const roomRouter = require("./SERVER/routes/rooms");
 const userRouter = require("./SERVER/routes/users");
@@ -27,7 +30,7 @@ const foodRouter = require("./SERVER/routes/food");
 // Import middleware
 const adminAuthMiddleware = require("./SERVER/middleware/adminAuth");
 const authMiddleware = require("./SERVER/middleware/auth");
-
+module.exports = {io}
 // CORS configuration to allow frontend connection
 const corsOptions = {
   origin: ["http://127.0.0.1:5500", "http://127.0.0.1:57353", "http://127.0.0.1:8080"],
@@ -118,3 +121,4 @@ async function startServer(url, port) {
 
 // Run server with environment variables for MongoDB URL and port
 startServer(process.env.MONGO_URI, process.env.PORT || 5000);
+

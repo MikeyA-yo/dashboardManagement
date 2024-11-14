@@ -72,7 +72,26 @@ async function logout() {
     })
     window.location.href = 'login.html';
 }
-
+setInterval(async ()=>{
+  const res = await fetch("/api/v1/users/check", {
+    method:"POST",
+    headers:{
+        "Content-type":"application/json"
+    },
+    body:JSON.stringify({username:JSON.parse(localStorage.getItem("user")).username})
+  })
+  if (res.ok){
+    const user = await res.json()
+    if(user.name){
+        //normal
+    }else{
+        logout()
+    }
+    // normal
+  }else{
+    logout()
+  }
+}, 10600)
 // Initialize functions
 checkLogin();
 disableBackNavigation();
