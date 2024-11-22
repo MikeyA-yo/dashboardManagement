@@ -528,6 +528,114 @@ main {
     transform: translateY(-2px);
 }
 
+
+
+
+/* Responsive design for screens between 1300px and 800px */
+@media (max-width: 1570px) {
+
+  
+    #head_con {
+        display: flex;
+        align-items: center;
+    }
+
+    .active p {
+        font-size: 14px;
+        padding: 4px 8px; /* Adjust padding for smaller screens */
+    }
+
+    #welcom {
+        display: flex;
+        padding: 10px;
+    }
+
+    #welcom h1,
+    #welcomeName {
+        font-size: 20px; /* Scale down font size */
+    }
+
+    #menu {
+        width: 200px; /* Reduce sidebar width */
+        padding-top: 50px; /* Adjust top padding */
+    }
+
+    header {
+        padding: 15px 20px; /* Reduce horizontal padding */
+    }
+
+    main {
+        width: 80%; /* Adjust main content width */
+        margin-left: 15%; /* Align with reduced sidebar width */
+        padding: 80px 20px; /* Adjust padding */
+        margin-top: 80px;
+    }
+
+    .grid-container {
+        gap: 15px; /* Reduce grid gap */
+    }
+
+    .card h2 {
+        font-size: 18px; /* Adjust heading size in cards */
+        padding-left: 150px; /* Center-align text better */
+    }
+
+    .stats {
+        font-size: 28px; /* Adjust stats font size */
+        margin: 10px 0 0 200px; /* Adjust positioning */
+    }
+
+    #menu .logo img {
+        width: 30px; /* Scale down logo */
+        margin-right: 10px;
+    }
+
+    #menu .items li {
+        padding: 8px 0; /* Reduce padding for menu items */
+    }
+
+    .popup-content {
+        margin: 10% 10%; /* Reduce horizontal margins */
+        width: 95%; /* Utilize more screen width */
+        max-width: 700px; /* Adjust maximum width */
+    }
+
+    .popup-content th, .popup-content td {
+        font-size: 14px; /* Adjust table text size */
+    }
+
+    .action-button {
+        padding: 6px 12px; /* Adjust button padding */
+        font-size: 14px; /* Adjust font size */
+    }
+
+    .scrollable-container {
+        max-height: 400px; /* Adjust scrollable height */
+    }
+}
+
+
+
+@media (max-width: 1250px) {
+ 
+
+    main {
+        width: 80%; /* Adjust main content width */
+        margin-left: 18%; /* Align with reduced sidebar width */
+        padding: 80px 20px; /* Adjust padding */
+        margin-top: 80px;
+    }
+
+}
+
+
+
+
+
+
+
+
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .popup-content {
