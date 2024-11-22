@@ -156,8 +156,8 @@ async function printDrinkEntry(index) {
                 margin-top: 20px;
             }
         </style>
-        <h1>Montevar Hotel</h1>
-        <h2>Drink & Beverage Receipt</h2>
+        <h2>Montevar Hotel</h2>
+        <h4>Drink & Beverage Receipt</h4>
         <p><strong>Room No:</strong> ${entry.roomNumber}</p>
         <p><strong>Type of Drink:</strong> ${entry.drinkType}</p>
         <p><strong>Beverage Type:</strong> ${entry.beverageType}p>

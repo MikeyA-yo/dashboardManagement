@@ -240,8 +240,8 @@ async function printBooking(index) {
                 margin-top: 20px;
             }
         </style>
-        <h1>Montevar Hotel</h1>
-        <h2>Booking Receipt</h2>
+        <h2>Montevar Hotel</h2>
+        <h4>Booking Receipt</h4>
         <p>Full Name: ${booking.fullName}</p>
         <p>Phone: ${booking.phoneNumber}</p>
         <p>Duration: ${booking.durationOfStayStart.slice(0, booking.durationOfStayStart.indexOf("T"))} to ${booking.durationOfStayEnd.slice(0, booking.durationOfStayEnd.indexOf("T"))}</p>
