@@ -4,17 +4,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clear All button functionality
     document.getElementById('clearAllBtn').addEventListener('click', async function() {
         if (confirm('Are you sure you want to clear all drink entries?')) {
-            // Clear entries in localStorage
-            localStorage.removeItem('drinkEntries');
+            // Clear entries in localStorage //todo
+            await fetch("/api/v1/drinks", {
+                method:"DELETE"
+            })
             loadDrinkReportEntries();  // Refresh the table after clearing entries
             updateDrinkCount();  // Reset the drink count
         }
     });
 });
 
-// Load drink report entries from localStorage and display them in the table
-function loadDrinkReportEntries() {
-    const drinkReportEntries = JSON.parse(localStorage.getItem('drinkEntries')) || [];
+// Load drink report entries from localStorage and display them in the table //todo
+async function loadDrinkReportEntries() {
+    const res = await fetch("/api/v1/drinks")
+            const entries = (await res.json()).drinks || [];
+    const drinkReportEntries = entries || [];
     const tableBody = document.querySelector('#drinkReportTable tbody');
     tableBody.innerHTML = '';  // Clear previous entries
 
@@ -25,13 +29,12 @@ function loadDrinkReportEntries() {
     drinkReportEntries.forEach((entry) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${entry.roomNumber}</td>
-            <td>${entry.drinkType}</td>
-            <td>${entry.beverageType}</td>
+            <td>${entry.roomNo}</td>
+            <td>${entry.drinkTypes.join(", ")} - ${entry.drinkAmounts.join(", ")}</td>
             <td>${entry.paymentMethod}</td>
             <td>${entry.serviceLocation}</td>
             <td>${entry.totalAmount}</td>
-            <td>${entry.date}</td>
+            <td>${entry.dateOfEntry}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -41,8 +44,10 @@ function loadDrinkReportEntries() {
 }
 
 // Function to update the drink count
-function updateDrinkCount() {
-    const drinkReportEntries = JSON.parse(localStorage.getItem('drinkEntries')) || [];
+async function updateDrinkCount() {
+    const res = await fetch("/api/v1/drinks")
+            const entries = (await res.json()).drinks || [];
+    const drinkReportEntries = entries || [];
     const drinkCount = drinkReportEntries.length;
 
     // Save the drink count in localStorage so it can be used in index.html

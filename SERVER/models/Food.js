@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const FoodSchema = new mongoose.Schema({
-  roomNumber: {
+  roomNo: {
     type: String,
     required: [true, "Please provide room number"],
   },
-  typeOfFood: {
-    type: String,
+  foodTypes: {
+    type: Array,
     required: [true, "Please specify the type of food"],
   },
-  beverageOrWater: {
-    type: String,
+  foodAmounts: {
+    type: Array,
     required: [true, "Please provide name of beverage or water"],
   },
   paymentMethod: {
@@ -28,12 +28,9 @@ const FoodSchema = new mongoose.Schema({
     required: [true, "Please provide amount"],
     min: [0, "You can't pay a negative value"],
   },
-  date:{
+  dateOfEntry:{
     type:String,
     default: new Date().toLocaleDateString()
-  },
-  username:{
-    type:String
   },
   isPrint:{
     type:Boolean,

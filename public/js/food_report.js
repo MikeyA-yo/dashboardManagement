@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
     const foodReportTableBody = document.querySelector("#foodReportTable tbody");
 
-    // Load saved food entries from localStorage
-    function loadFoodReportEntries() {
-        const foodReportEntries = JSON.parse(localStorage.getItem("foodReportEntries")) || [];
+    // Load saved food entries from localStorage //todo
+    async function loadFoodReportEntries() {
+        const res = await fetch("/api/v1/food")
+        const e = (await res.json()).foods || [];
+        const foodReportEntries = e || [];
         foodReportEntries.forEach((entry) => {
             addFoodReportEntryToTable(entry);
         });
@@ -29,10 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
         foodReportTableBody.appendChild(row);
     }
 
-    // Clear all entries
+    // Clear all entries //todo
     const clearAllBtn = document.getElementById("clearAllBtn");
-    clearAllBtn.addEventListener("click", function () {
-        localStorage.removeItem("foodReportEntries");
+    clearAllBtn.addEventListener("click", async function () {
+        await fetch("/api/v1/food",{
+            method:"DELETE"
+        })
         foodReportTableBody.innerHTML = ""; // Clear the table as well
     });
 

@@ -1,6 +1,6 @@
+let currentEditIndex;
 document.addEventListener("DOMContentLoaded", function () {
     let editMode = false;
-    let currentEditIndex = null;
 
     const roomFoodForm = document.getElementById("food-form");
     const foodItemsContainer = document.getElementById("food-items-container");
@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             addNewEntry(entry);
         }
-
-        saveEntriesToLocalStorage();
+         // this isn't being used here
+        // saveEntries();
         resetForm();
     });
 
@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             prepareEditEntry(e.target.closest("tr"));
         } else if (e.target.classList.contains("print-receipt")) {
             printReceipt(e.target.closest("tr"));
+
         }
     });
 
@@ -86,11 +87,18 @@ document.addEventListener("DOMContentLoaded", function () {
         return { roomNo, foodTypes, foodAmounts, paymentMethod, serviceLocation, totalAmount, dateOfEntry };
     }
 
-    function addNewEntry(entry) {
+    async function addNewEntry(entry) {
         addEntryToTable(entry);
-        const entries = getEntriesFromLocalStorage();
-        entries.push(entry);
-        saveEntriesToLocalStorage(entries);
+        await fetch ("/api/v1/food", {
+            method:"POST",
+            body:JSON.stringify(entry),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        // const entries = getEntries();
+        // entries.push(entry);
+        // saveEntries(entries);
     }
 
     function addEntryToTable(entry) {
@@ -112,13 +120,20 @@ document.addEventListener("DOMContentLoaded", function () {
         entriesTableBody.appendChild(row);
     }
 
-    function prepareEditEntry(row) {
+    async function prepareEditEntry(row) {
         const cells = row.children;
         const roomNo = cells[0].textContent;
         const paymentMethod = cells[2].textContent;
         const serviceLocation = cells[3].textContent;
         const totalAmount = cells[4].textContent;
-
+        //get entry for isPrint check
+        let index = Array.from(entriesTableBody.children).indexOf(row);
+        const entries = await getEntries();
+        const entry = entries[index];
+        if(entry.isPrint){
+            alert("Can't edit after making a print out")
+            return
+        }
         const foodDetails = Array.from(cells[1].querySelectorAll("div")).map((div) => {
             const [type, amount] = div.textContent.split(" - ");
             return { type, amount };
@@ -136,18 +151,22 @@ document.addEventListener("DOMContentLoaded", function () {
         currentEditIndex = Array.from(entriesTableBody.children).indexOf(row);
     }
 
-    function updateEntry(entry) {
-        const entries = getEntriesFromLocalStorage();
-        entries[currentEditIndex] = entry;
-        saveEntriesToLocalStorage(entries);
+    async function updateEntry(entry) {
+        const entries = await getEntries();
+        entry._id = entries[currentEditIndex]._id 
+        saveEntries(entry);
         reloadTable();
         editMode = false;
-        currentEditIndex = null;
     }
 
-    function printReceipt(row) {
+    async function printReceipt(row) {
         const entry = collectRowData(row);
 
+         //get id for isPrint edit
+         let index = Array.from(entriesTableBody.children).indexOf(row);
+         const entries = await getEntries();
+         const _id = entries[index]._id
+         
         const receiptContent = `
             <h1>Montevar Hotel</h1>
             <h3>Food/Beverage Receipt</h3>
@@ -165,31 +184,47 @@ document.addEventListener("DOMContentLoaded", function () {
         printWindow.document.write(receiptContent);
         printWindow.document.close();
         printWindow.print();
+
+        await fetch("/api/v1/food", {
+            method:"POST",
+            body: JSON.stringify({edit:true, isPrint:true, _id}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
     }
 
     function resetForm() {
         roomFoodForm.reset();
         foodItemsContainer.innerHTML = "";
         editMode = false;
-        currentEditIndex = null;
+        // in this place setting currentEditIndex to null causes a null error
     }
 
-    function reloadTable() {
+    async function reloadTable() {
         entriesTableBody.innerHTML = "";
-        const entries = getEntriesFromLocalStorage();
+        const entries = await getEntries();
         entries.forEach(addEntryToTable);
     }
-
-    function saveEntriesToLocalStorage(entries = []) {
-        localStorage.setItem("foodEntries", JSON.stringify(entries));
+     //instead take _id as param
+    async function saveEntries(entry) {
+        entry.edit = true
+        await fetch ("/api/v1/food", {
+            method:"POST",
+            body:JSON.stringify(entry),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
     }
-
-    function getEntriesFromLocalStorage() {
-        return JSON.parse(localStorage.getItem("foodEntries")) || [];
+    //todo no more local storage
+    async function getEntries() {
+        const res = await fetch("/api/v1/food")
+        return (await res.json()).foods || [];
     }
-
-    function loadFoodEntries() {
-        const entries = getEntriesFromLocalStorage();
+     //todo
+    async function loadFoodEntries() {
+        const entries = await getEntries();
         entries.forEach(addEntryToTable);
     }
 

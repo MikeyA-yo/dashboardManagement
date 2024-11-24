@@ -76,13 +76,18 @@ document.addEventListener("DOMContentLoaded", function () {
             totalAmount,
             dateOfEntry, 
         };
-
-        addEntryToTable(entry);
-        saveEntryToLocalStorage(entry);
+        if (editMode){
+            entry._id = currentUpdateId;
+            entry.edit = true
+        }
+        !editMode &&addEntryToTable(entry);
+        saveEntry(entry);
 
         // Reset form
         drinkForm.reset();
         drinkItemsContainer.innerHTML = ""; 
+        editMode && window.location.reload()
+        
     });
 
     // Add entry to the table
@@ -109,25 +114,43 @@ document.addEventListener("DOMContentLoaded", function () {
         entriesTableBody.appendChild(row);
     }
 
-    // Save entry to localStorage
-    function saveEntryToLocalStorage(entry) {
-        const entries = JSON.parse(localStorage.getItem("drinkEntries")) || [];
-        entries.push(entry);
-        localStorage.setItem("drinkEntries", JSON.stringify(entries));
+    // Save entry to localStorage(now db) //todo
+    async function saveEntry(entry) {
+        await fetch ("/api/v1/drinks", {
+            method:"POST",
+            headers:{
+                "Content-type":"application/json"
+            },
+            body:JSON.stringify(entry)
+        })
+        // const entries = JSON.parse(localStorage.getItem("drinkEntries")) || [];
+        // entries.push(entry);
+        // localStorage.setItem("drinkEntries", JSON.stringify(entries));
     }
 
-    // Load saved drink entries
-    function loadDrinkEntries() {
-        const entries = JSON.parse(localStorage.getItem("drinkEntries")) || [];
+    // Load saved drink entries //todo
+    async function loadDrinkEntries() {
+        const res = await fetch("/api/v1/drinks")
+        const entries = (await res.json()).drinks || [];
         entries.forEach(addEntryToTable);
     }
 
-    // Handle edit functionality
-    entriesTableBody.addEventListener("click", (e) => {
+    // Handle edit functionality //todo
+    entriesTableBody.addEventListener("click",async (e) => {
         if (e.target.classList.contains("edit-entry")) {
             const row = e.target.parentElement.parentElement;
             const cells = row.querySelectorAll("td");
-
+            // get index to get entry, used to determine if it can print or not
+            const res = await fetch("/api/v1/drinks")
+            const entries = (await res.json()).drinks || [];
+            const childs = Array.from(entriesTableBody.children)
+            const index = childs.indexOf(row);
+            const entry = entries[index];
+            if (entry.isPrint){
+                alert ("Cannot edit after making a print")
+                return;
+            }
+            currentUpdateId = entry._id;
             const roomNo = cells[0].textContent;
             const drinkTypes = Array.from(cells[1].querySelectorAll("span")).map(
                 (span) => span.textContent
@@ -169,11 +192,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Handle print receipt functionality
-    entriesTableBody.addEventListener("click", (e) => {
+    // Handle print receipt functionality //todo
+    entriesTableBody.addEventListener("click",async (e) => {
         if (e.target.classList.contains("print-receipt")) {
             const row = e.target.parentElement.parentElement;
             const cells = row.querySelectorAll("td");
+            // get index to get ID
+            const res = await fetch("/api/v1/drinks")
+            const entries = (await res.json()).drinks || [];
+            const childs = Array.from(entriesTableBody.children)
+            const index = childs.indexOf(row);
+            const entry = entries[index];
+            const _id = entry._id
+            
 
             const roomNo = cells[0].textContent;
             const drinkItems = cells[1].innerHTML;
@@ -197,11 +228,19 @@ document.addEventListener("DOMContentLoaded", function () {
             printWindow.document.write(`<html><head><title>Receipt</title></head><body>${receiptContent}</body></html>`);
             printWindow.document.close();
             printWindow.print();
+            // update print status
+            await fetch("/api/v1/drinks", {
+                method:"POST",
+                body:JSON.stringify({_id,isPrint:true, edit:true}),
+                headers:{
+                    "Content-type":"application/json"
+                },
+            })
         }
     });
 });
 
-// Export the drink entry to drink_report.html (save to localStorage)
+// Export the drink entry to drink_report.html (save to localStorage) //todo ig
 function exportToDrinkReport(entry) {
     const drinkReportEntries = JSON.parse(localStorage.getItem('drinkReportEntries')) || [];
     drinkReportEntries.push(entry);
