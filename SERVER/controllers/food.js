@@ -3,21 +3,20 @@ const Food = require("../models/Food");
 const addFood = async (req, res) => {
   try {
     const {
-      roomNumber,
-      typeOfFood,
-      beverageOrWater,
+      roomNo,
+      foodTypes,
+      foodAmounts,
       paymentMethod,
       serviceLocation,
       totalAmount,
       edit,
-      username, 
       _id,
       isPrint
     } = req.body;
     if (edit && _id && isPrint && (
-      !roomNumber ||
-      !typeOfFood ||
-      !beverageOrWater ||
+      !roomNo ||
+      !foodTypes ||
+      !foodAmounts ||
       !paymentMethod ||
       !serviceLocation ||
       !totalAmount
@@ -26,9 +25,9 @@ const addFood = async (req, res) => {
       return res.status(200).json({message:f})
     }
     if (
-      !roomNumber ||
-      !typeOfFood ||
-      !beverageOrWater ||
+      !roomNo ||
+      !foodTypes ||
+      !foodAmounts ||
       !paymentMethod ||
       !serviceLocation ||
       !totalAmount
@@ -39,12 +38,12 @@ const addFood = async (req, res) => {
     }
     let fd;
     if(!edit){
-      const food = new Food({username, roomNumber, typeOfFood, beverageOrWater, paymentMethod, serviceLocation, totalAmount });
+      const food = new Food({ roomNo, foodTypes, foodAmounts, paymentMethod, serviceLocation, totalAmount });
       await food.save()
       fd = food
     }else{
       fd = await Food.find({})
-      await Food.updateOne({_id}, {roomNumber, typeOfFood, beverageOrWater, paymentMethod, serviceLocation, totalAmount})
+      await Food.updateOne({_id}, {roomNo, foodTypes, foodAmounts, paymentMethod, serviceLocation, totalAmount})
     }
     let food = fd
     return res.status(201).json({ message: "Food successfully added", food });
