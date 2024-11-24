@@ -6,75 +6,86 @@
     <title>Room Food Service</title>
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/food_styles.css">
+   
 </head>
 <body>
     <div class="heading">
-        <img src="images/Montevar_logo.png" alt=""></div>
+        <img src="images/Montevar_logo.png" alt="Montevar Hotel">
+    </div>
 
     <div class="container">
         <h1>Montevar Hotel - Room Food Service</h1>
 
         <!-- Room Food Service Form -->
-        <form id="roomFoodForm" class="form">
+        <form id="food-form">
             <div class="form-group">
-                <label for="roomNo">Room No:</label>
-                <input type="text" id="roomNo" name="roomNo" required>
+                <label for="room-no">Room No:</label>
+                <input type="number" id="room-no" name="roomNo" required>
+            </div>
+
+            <div id="food-items-container">
+                <!-- Default food item row -->
+                <div class="food-item">
+                    <div class="food-item-flex">
+                        <div class="cnt">
+                        <label for="food-type">Food/Beverage:</label>
+                        <input type="text" class="food-type" name="foodType[]" required>
+                    </div>
+
+                    <div class="cnt nt">
+                        <label for="food-amount"><br>Amount:</label>
+                        <input type="number" class="food-amount" name="foodAmount[]" min="0" required></div>
+                    </div>
+                    <button type="button" class="add-food">+</button>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="foodType">Type of Food:</label>
-                <textarea id="foodType" name="foodType" required rows="3"></textarea> <!-- Changed to textarea for multi-line input -->
-            </div>
-
-            <div class="form-group">
-                <label for="beverage">Beverage/Water:</label>
-                <textarea id="beverage" name="beverage" required rows="3"></textarea> <!-- Changed to textarea for multi-line input -->
-            </div>
-
-            <div class="form-group">
-                <label for="paymentMethod">Payment Method:</label>
-                <select id="paymentMethod" name="paymentMethod" required>
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="paymentMethod" required>
                     <option value="Cash">Cash</option>
                     <option value="Card">Card</option>
                     <option value="Transfer">Transfer</option>
                 </select>
             </div>
-
             <div class="form-group">
-                <label for="serviceLocation">Service Location:</label>
-                <select id="serviceLocation" name="serviceLocation" required>
+                <label for="service-location">Service Location:</label>
+                <select id="service-location" name="serviceLocation" required>
                     <option value="Room">Room Service</option>
                     <option value="Restaurant">Restaurant</option>
                 </select>
             </div>
-
             <div class="form-group">
-                <label for="totalAmount">Total Amount:</label>
-                <input type="number" id="totalAmount" name="totalAmount" required>
+                <label for="total-amount">Total Amount:</label>
+                <input type="text" id="total-amount" name="totalAmount" readonly>
             </div>
-
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="submit">Submit Order</button>
         </form>
-
-        <h2>Submitted Entries</h2>
-        <div class="table-container">
-        <table id="foodTable" class="styled-table">
+        
+<!-- Submitted Entries Section -->
+<section id="submitted-entries">
+    <h2>Submitted Entries</h2>
+    <div class="table-container">
+        <table>
             <thead>
                 <tr>
                     <th>Room No</th>
-                    <th>Type of Food</th>
-                    <th>Beverage/Water</th>
+                    <th>Food/Beverage and Amount</th>
                     <th>Payment Method</th>
                     <th>Service Location</th>
                     <th>Total Amount</th>
-                    <th>Date</th> <!-- Added Date column -->
+                    <th>Date of Entry</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="entries-table-body">
+                <!-- Dynamic entries will be injected here -->
+            </tbody>
         </table>
     </div>
-    </div>
+</section>
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/room_food.js"></script>
 </body>

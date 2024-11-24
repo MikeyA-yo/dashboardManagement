@@ -1,185 +1,205 @@
-let editMode = false;
-let currentUpdateId = ""
-document.addEventListener('DOMContentLoaded', function() {
-    loadDrinkEntries();  // Load stored entries on page load
+document.addEventListener("DOMContentLoaded", function () {
+    let editMode = false;
+    let currentUpdateId = "";
 
-    // Form submission handler
-    document.getElementById('roomDrinkForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const roomNo = document.getElementById('roomNo').value;
-        const drinkType = document.getElementById('drinkType').value;
-        const beverage = document.getElementById('beverage').value;
-        const paymentMethod = document.getElementById('paymentMethod').value;
-        const serviceLocation = document.getElementById('serviceLocation').value;
-        const totalAmount = document.getElementById('totalAmount').value;
+    const drinkForm = document.getElementById("drink-form");
+    const drinkItemsContainer = document.getElementById("drink-items-container");
+    const entriesTableBody = document.getElementById("entries-table-body");
 
-        const currentDate = new Date().toLocaleDateString();
+    // Load saved drink entries from localStorage
+    loadDrinkEntries();
 
-        const editingIndex = document.getElementById('roomDrinkForm').dataset.editingIndex;
+    // Add new drink item row
+    drinkItemsContainer.addEventListener("click", (e) => {
+        // Add a new drink item row
+        if (e.target.classList.contains("add-drink")) {
+            const newDrinkItem = document.createElement("div");
+            newDrinkItem.classList.add("drink-item");
+            newDrinkItem.innerHTML = `
+                <div class="drink-item-flex">
+                <div class="cnt">
+                    <label for="drink-type">Type of Drink/Others:</label>
+                    <input type="text" class="drink-type" name="drinkType[]" required>
+                    </div>
+                    
+                    <div class="cnt nt">
+                    <label for="drink-amount">Amount:</label>
+                    <input type="number" class="drink-amount" name="drinkAmount[]" min="0" required>
+                    </div>
+                </div>
+                <button type="button" class="remove-drink">-</button>
+            `;
+            drinkItemsContainer.appendChild(newDrinkItem);
+        }
+    
+        // Remove a drink item row
+        if (e.target.classList.contains("remove-drink")) {
+            e.target.parentElement.remove();
+            calculateTotal();
+        }
+    });
 
-        const drinkEntry = {
-            roomNumber:roomNo,
-            drinkType,
-            beverageType:beverage,
+    // Calculate total amount dynamically when input changes
+    drinkItemsContainer.addEventListener("input", calculateTotal);
+
+    function calculateTotal() {
+        const drinkAmounts = document.querySelectorAll(".drink-amount");
+        const totalAmount = Array.from(drinkAmounts).reduce(
+            (sum, input) => sum + Number(input.value || 0),
+            0
+        );
+        document.getElementById("total-amount").value = totalAmount;
+    }
+
+    // Submit form
+    drinkForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const roomNo = document.getElementById("room-no").value;
+        const paymentMethod = document.getElementById("payment-method").value;
+        const serviceLocation = document.getElementById("service-location").value;
+        const drinkTypes = Array.from(document.querySelectorAll(".drink-type")).map(
+            (input) => input.value
+        );
+        const drinkAmounts = Array.from(
+            document.querySelectorAll(".drink-amount")
+        ).map((input) => input.value);
+        const totalAmount = document.getElementById("total-amount").value;
+        const dateOfEntry = new Date().toLocaleString(); // Get the current date and time
+
+        const entry = {
+            roomNo,
+            drinkTypes,
+            drinkAmounts,
             paymentMethod,
             serviceLocation,
             totalAmount,
-            username:JSON.parse(localStorage.getItem("user")).username,
-            date: currentDate
+            dateOfEntry, 
         };
 
-        // Handle either new entry or update existing one
-        drinkEntry._id = currentUpdateId;
-        if (editMode) {
-            updateDrinkEntry(drinkEntry, parseInt(editingIndex));
-            document.getElementById('roomDrinkForm').dataset.editingIndex = "";
-            editMode = false
-        } else {
-            saveDrinkEntry(drinkEntry);
-        }
+        addEntryToTable(entry);
+        saveEntryToLocalStorage(entry);
 
-        loadDrinkEntries();
-        // exportToDrinkReport(drinkEntry); // Save data to drink_report.html as well // we have a db bruh
-        document.getElementById('roomDrinkForm').reset();
+        // Reset form
+        drinkForm.reset();
+        drinkItemsContainer.innerHTML = ""; 
     });
-});
 
-// Save drink entry to localStorage
-async function saveDrinkEntry(entry) {
-    const res = await fetch ("/api/v1/drinks", {
-        method:"POST",
-        headers:{
-            "Content-type":"application/json"
-        },
-        body: JSON.stringify(entry)
-    })
-    window.location.reload()
-    // const drinkEntries = JSON.parse(localStorage.getItem('drinkEntries')) || [];
-    // drinkEntries.push(entry);
-    // localStorage.setItem('drinkEntries', JSON.stringify(drinkEntries));
-}
-
-// Update an existing drink entry
-async function updateDrinkEntry(updatedEntry, index) {
-    updatedEntry.edit = true;
-    const res = await fetch ("/api/v1/drinks", {
-        method:"POST",
-        headers:{
-            "Content-type":"application/json"
-        },
-        body: JSON.stringify(updatedEntry)
-    })
-    window.location.reload()
-    // const drinkEntries = JSON.parse(localStorage.getItem('drinkEntries')) || [];
-    // drinkEntries[index] = updatedEntry;
-    // localStorage.setItem('drinkEntries', JSON.stringify(drinkEntries));
-}
-
-// Load drink entries from localStorage
-async function loadDrinkEntries() {
-    const res = await fetch("/api/v1/drinks");
-    const drinks = await res.json()
-    const drinkEntries = drinks.drinks || [];
-    const tableBody = document.querySelector('#drinkTable tbody');
-    tableBody.innerHTML = '';
-    
-    drinkEntries.forEach((entry, index) => {
-        const row = document.createElement('tr');
+    // Add entry to the table
+    function addEntryToTable(entry) {
+        const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${entry.roomNumber}</td>
-            <td>${entry.drinkType}</td>
-            <td>${entry.beverageType}</td>
+            <td>${entry.roomNo}</td>
+            <td>
+                ${entry.drinkTypes.map((type, index) => {
+                    return `<div class="drink-item-entry">
+                                <span>${type}</span> - <span>${entry.drinkAmounts[index]}</span>
+                            </div>`;
+                }).join("")}
+            </td>
             <td>${entry.paymentMethod}</td>
             <td>${entry.serviceLocation}</td>
             <td>${entry.totalAmount}</td>
-            <td>${entry.date}</td>
+            <td>${entry.dateOfEntry}</td> <!-- Display date of entry -->
             <td>
-                <button onclick="editDrinkEntry(${index})">Edit</button>
-                <button onclick="printDrinkEntry(${index})">Print</button>
+                <button class="edit-entry">Edit</button>
+                <button class="print-receipt">Print</button>
             </td>
         `;
-        tableBody.appendChild(row);
-    });
-}
-
-// Edit a drink entry
-async function editDrinkEntry(index) {
-    const res = await fetch("/api/v1/drinks");
-    const drinks = await res.json()
-    const drinkEntries = drinks.drinks || [];
-    const entry = drinkEntries[index];
-    if(entry.isPrint){
-        alert("Can't edit after print")
-        return
+        entriesTableBody.appendChild(row);
     }
-    document.getElementById('roomNo').value = entry.roomNumber;
-    document.getElementById('drinkType').value = entry.drinkType;
-    document.getElementById('beverage').value = entry.beverageType;
-    document.getElementById('paymentMethod').value = entry.paymentMethod;
-    document.getElementById('serviceLocation').value = entry.serviceLocation;
-    document.getElementById('totalAmount').value = entry.totalAmount;
 
-    document.getElementById('roomDrinkForm').dataset.editingIndex = index;
-    editMode = true
-    currentUpdateId = entry._id
-}
+    // Save entry to localStorage
+    function saveEntryToLocalStorage(entry) {
+        const entries = JSON.parse(localStorage.getItem("drinkEntries")) || [];
+        entries.push(entry);
+        localStorage.setItem("drinkEntries", JSON.stringify(entries));
+    }
 
-// Print a drink entry for the 80mm mini printer
-// Print a drink entry for the 80mm mini printer
-async function printDrinkEntry(index) {
-    const res = await fetch("/api/v1/drinks");
-    const drinks = await res.json()
-    const drinkEntries = drinks.drinks || [];
-    const entry = drinkEntries[index];
+    // Load saved drink entries
+    function loadDrinkEntries() {
+        const entries = JSON.parse(localStorage.getItem("drinkEntries")) || [];
+        entries.forEach(addEntryToTable);
+    }
 
-    const printWindow = window.open('', '', 'width=800,height=600');
+    // Handle edit functionality
+    entriesTableBody.addEventListener("click", (e) => {
+        if (e.target.classList.contains("edit-entry")) {
+            const row = e.target.parentElement.parentElement;
+            const cells = row.querySelectorAll("td");
 
-    printWindow.document.write(`
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
-            h1, h2 {
-                text-align: left;
-                margin-bottom: 10px;
-            }
-            p {
-                text-align: left;
-                margin: 8px 0;
-            }
-            hr {
-                border: 1px solid #ccc;
-            }
-            button {
-                margin-top: 20px;
-            }
-        </style>
-        <h2>Montevar Hotel</h2>
-        <h4>Drink & Beverage Receipt</h4>
-        <p><strong>Room No:</strong> ${entry.roomNumber}</p>
-        <p><strong>Type of Drink:</strong> ${entry.drinkType}</p>
-        <p><strong>Beverage Type:</strong> ${entry.beverageType}p>
-        <p><strong>Payment Method:</strong> ${entry.paymentMethod}</p>
-        <p><strong>Service Location:</strong> ${entry.serviceLocation}</p>
-        <p><strong>Total Amount:</strong> ${entry.totalAmount}</p>
-        <p><strong>Date:</strong> ${entry.date}</p>
-        <hr>
-        <button onclick="window.print()">Print</button>
-        <button onclick="window.close()">Close</button>
-    `);
-    await fetch ("/api/v1/drinks", {
-        method:"POST",
-        headers:{
-            "Content-type":"application/json"
-        },
-        body: JSON.stringify({isPrint:true, edit:true, _id:entry._id})
-    })
-    printWindow.document.close();
-    printWindow.focus();
-}
+            const roomNo = cells[0].textContent;
+            const drinkTypes = Array.from(cells[1].querySelectorAll("span")).map(
+                (span) => span.textContent
+            ).filter((_, index) => index % 2 === 0); 
+            const drinkAmounts = Array.from(cells[1].querySelectorAll("span")).map(
+                (span) => span.textContent
+            ).filter((_, index) => index % 2 !== 0); 
 
+            const paymentMethod = cells[2].textContent;
+            const serviceLocation = cells[3].textContent;
+            const totalAmount = cells[4].textContent;
+            const dateOfEntry = cells[5].textContent; 
+
+            // Set the form values for editing
+            document.getElementById("room-no").value = roomNo;
+            document.getElementById("payment-method").value = paymentMethod;
+            document.getElementById("service-location").value = serviceLocation;
+            document.getElementById("total-amount").value = totalAmount;
+
+            // Populate the drink items for editing
+            drinkItemsContainer.innerHTML = "";
+            drinkTypes.forEach((type, index) => {
+                const drinkItem = document.createElement("div");
+                drinkItem.classList.add("drink-item");
+                drinkItem.innerHTML = `
+                    <div class="drink-item-flex">
+                        <label for="drink-type">Type of Drink/Others:</label>
+                        <input type="text" class="drink-type" name="drinkType[]" value="${type}" required>
+                        
+                        <label for="drink-amount">Amount:</label>
+                        <input type="number" class="drink-amount" name="drinkAmount[]" value="${drinkAmounts[index]}" min="0" required>
+                    </div>
+                    <button type="button" class="remove-drink">-</button>
+                `;
+                drinkItemsContainer.appendChild(drinkItem);
+            });
+
+            editMode = true;
+        }
+    });
+
+    // Handle print receipt functionality
+    entriesTableBody.addEventListener("click", (e) => {
+        if (e.target.classList.contains("print-receipt")) {
+            const row = e.target.parentElement.parentElement;
+            const cells = row.querySelectorAll("td");
+
+            const roomNo = cells[0].textContent;
+            const drinkItems = cells[1].innerHTML;
+            const paymentMethod = cells[2].textContent;
+            const serviceLocation = cells[3].textContent;
+            const totalAmount = cells[4].textContent;
+            const dateOfEntry = cells[5].textContent;
+
+            const receiptContent = `
+                <h1>Montevar Hotel</h1>
+                <h3>Drinks/Beverage Receipt</h3>
+                <p><strong>Room No:</strong> ${roomNo}</p>
+                <p><strong>Drink/Others:</strong><br>${drinkItems}</p>
+                <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+                <p><strong>Service Location:</strong> ${serviceLocation}</p>
+                <p><strong>Total Amount:</strong> ${totalAmount}</p>
+                <p><strong>Date:</strong> ${dateOfEntry}</p> <!-- Display date on the receipt -->
+            `;
+
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(`<html><head><title>Receipt</title></head><body>${receiptContent}</body></html>`);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    });
+});
 
 // Export the drink entry to drink_report.html (save to localStorage)
 function exportToDrinkReport(entry) {

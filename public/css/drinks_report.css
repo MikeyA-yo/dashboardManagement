@@ -1,0 +1,32 @@
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
+}
+.styled-table thead tr {
+    background-color: #333;
+    color: #fff;
+}
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+.styled-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+.clear-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.clear-btn:hover {
+    background-color: darkred;
+}
