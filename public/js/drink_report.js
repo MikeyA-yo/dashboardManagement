@@ -30,7 +30,11 @@ async function loadDrinkReportEntries() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${entry.roomNo}</td>
-            <td>${entry.drinkTypes.join(", ")} - ${entry.drinkAmounts.join(", ")}</td>
+            <td>${entry.foodTypes.map((type, index) => {
+                return `<div class="food-item-entry">
+                            <span>${type}</span> - <span>${entry.foodAmounts[index]}</span>
+                        </div>`;
+            }).join("")}</td>
             <td>${entry.paymentMethod}</td>
             <td>${entry.serviceLocation}</td>
             <td>${entry.totalAmount}</td>
